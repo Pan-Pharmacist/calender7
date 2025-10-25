@@ -28,7 +28,7 @@
         .schedule-row:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen font-thai">
+<body class="bg-gradient-to-br from-blue-50 to Indigo-100 min-h-screen font-thai">
     <!-- Login Page -->
     <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
@@ -152,58 +152,152 @@
                         <input type="date" id="reportEndDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                 </div>
-                <button id="generateReportBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">Generate Report</button>
-                <button id="exportReportBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:bg-gray-400 disabled:opacity-50" disabled>Export to Excel</button>
-                <div id="reportMessage" class="mt-4 text-center hidden"></div>
-                <div id="reportResults" class="mt-4 overflow-x-auto hidden">
-                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th>#</th>
-                                <th>Pharmacist</th>
-                                <th>Shift</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reportTableBody" class="bg-white divide-y divide-gray-200"></tbody>
-                    </table>
+                <div class="flex gap-4 mb-6">
+                    <button id="generateReportBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-colors main-button flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        สร้างรายงาน
+                    </button>
+                    <button id="exportReportBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors main-button flex items-center" disabled>
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        ส่งออก Excel
+                    </button>
                 </div>
-                <div id="statsSection" class="mt-6 hidden">
-                    <!-- Stats content -->
-                    <div>
-                        <h3 class="font-medium text-gray-700">Stats by Pharmacist</h3>
+                <!-- ผลลัพธ์รายงาน -->
+                <div id="reportResults" class="hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">ผลลัพธ์รายงาน</h3>
+                    <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th>Pharmacist</th>
-                                    <th>Total</th>
-                                    <th>Details</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ลำดับ</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อ-นามสกุล</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อเวร</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่อยู่เวร</th>
                                 </tr>
                             </thead>
-                            <tbody id="statsPharmacistBody" class="bg-white divide-y divide-gray-200"></tbody>
+                            <tbody id="reportTableBody" class="bg-white divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
-                        <h3 class="font-medium text-gray-700">Stats by Shift</h3>
-                        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th>Shift</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="statsShiftBody" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
+                </div>
+                <!-- สถิติตามเภสัชกร / สถิติตามเวร -->
+                <div id="statsSection" class="hidden mt-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">สถิติ</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">เภสัชกร</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">รวมเวร</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">แจกแจงเวร</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="statsPharmacistBody" class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อเวร</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">จำนวน</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="statsShiftBody" class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+                <div id="reportMessage" class="mt-4 text-center hidden"></div>
+            </div>
+        </div>
+        <!-- Management Tab -->
+        <div id="manageTab" class="tab-content hidden max-w-6xl mx-auto p-6">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Add Pharmacist -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 fade-in dashboard-card">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        เพิ่มเภสัชกรใหม่
+                    </h3>
+                    <form id="pharmacistForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-นามสกุล</label>
+                            <input type="text" id="pharmacistName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="กรอกชื่อ-นามสกุลเภสัชกร" required>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">User ID</label>
+                                <input type="text" id="pharmacistUserId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="เช่น p001" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                                <input type="text" id="pharmacistPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="เช่น 1234" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors main-button flex items-center justify-center">
+                            <span id="pharmacistSubmitText">เพิ่มเภสัชกร</span>
+                            <div id="pharmacistLoading" class="loading ml-2 hidden"></div>
+                        </button>
+                    </form>
+                    <div id="pharmacistMessage" class="mt-4 text-center text-sm hidden"></div>
+                </div>
+                <!-- Add Shift -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 fade-in dashboard-card">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        เพิ่มเวรใหม่
+                    </h3>
+                    <form id="shiftForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อเวร</label>
+                            <input type="text" id="shiftName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="กรอกชื่อเวร (เช่น เช้า, บ่าย, ดึก)" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">ตัวย่อเฉพาะ</label>
+                            <input type="text" id="shiftAbbrev" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="กรอกตัวย่อ (เช่น MOR, EVE, NHT)" required>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors main-button flex items-center justify-center">
+                            <span id="shiftSubmitText">เพิ่มเวร</span>
+                            <div id="shiftLoading" class="loading ml-2 hidden"></div>
+                        </button>
+                    </form>
+                    <div id="shiftMessage" class="mt-4 text-center text-sm hidden"></div>
+                </div>
+            </div>
+            <!-- Existing Pharmacists & Shifts List -->
+            <div class="grid lg:grid-cols-2 gap-8 mt-8">
+                <!-- Pharmacists List -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 fade-in dashboard-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">รายชื่อเภสัชกร</h3>
+                        <button id="setupInitialUsersBtn" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded-lg transition-colors">
+                            สร้างข้อมูลเริ่มต้น
+                        </button>
+                    </div>
+                    <div id="pharmacistsList"></div>
+                </div>
+                <!-- Shifts List -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 fade-in dashboard-card">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">รายชื่อเวร</h3>
+                    <div id="shiftsList"></div>
                 </div>
             </div>
         </div>
-        <!-- My Data Tab -->
+        <!-- My Data Tab (Edit My Info) -->
         <div id="mydataTab" class="tab-content hidden max-w-6xl mx-auto p-6">
             <div class="bg-white rounded-2xl shadow-xl p-8 fade-in dashboard-card">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                     <svg class="w-6 h-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5H9C7.11438 5 6.17157 5 5.58579 5.58579C5 6.17157 5 7.11438 5 9V15C5 16.8856 5 17.8284 5.58579 18.4142C6.17157 19 7.11438 19 9 19H15C16.8856 19 17.8284 19 18.4142 18.4142C19 17.8284 19 16.8856 19 15V12M9.31899 12.6911L15.2486 6.82803C15.7216 6.36041 16.4744 6.33462 16.9782 6.76876C17.5331 7.24688 17.5723 8.09299 17.064 8.62034L11.2329 14.6702L9 15L9.31899 12.6911Z"></path>
                     </svg>
                     แก้ไขข้อมูลของฉัน
                 </h2>
@@ -227,11 +321,11 @@
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th>ชื่อ-นามสกุลเภสัชกร</th>
-                                    <th>ชื่อเวร</th>
-                                    <th>วันที่อยู่เวร</th>
-                                    <th>วันที่บันทึก</th>
-                                    <th>เลือก</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อ-นามสกุลเภสัชกร</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อเวร</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่อยู่เวร</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่บันทึก</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">เลือก</th>
                                 </tr>
                             </thead>
                             <tbody id="myDataTableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -245,16 +339,17 @@
     <script>
         // ====== CONFIG ======
         const CONFIG = {
-            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyNksv-_Md0NEgyLfP5AFTBGCQvhAxjoq5cMGjz4FND8PXq5X8Hogoay4uVfG-ivdcGdQ/exec',
-            SHEET_ID: '1VzFmOgrQzbyvQsFNoIw7X8TcLAYods3F5uAsUa4J-f8'
+            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyRgGqIat7a63wy3wdJl6rlplBBvZAlQRfuZYcy1SrL31GAdCEy1TXCQdOQGJ_UlFQu/exec',  // *เปลี่ยน URL เป็นของคุณ*
+            SHEET_ID: '1Z2mKuXamqcHIM8f3bWInq6Q8upJz9EM-4ienVBWhT1s'  // *เปลี่ยน Sheet ID เป็นของคุณ*
         };
+        // =====================
         // Global state
-        let pharmacists = [];
+        let pharmacists = []; // array of {name, userId}
         let shifts = [];
         let scheduleRowCounter = 0;
         let reportData = [];
-        let currentUser = null;
-        // DOM references
+        let currentUser = null; // {userId, name}
+        // DOM shorthand
         const loginPage = document.getElementById('loginPage');
         const mainApp = document.getElementById('mainApp');
         const loginForm = document.getElementById('loginForm');
@@ -263,13 +358,19 @@
         const loginText = document.getElementById('loginText');
         const loginLoading = document.getElementById('loginLoading');
         const currentUserDisplay = document.getElementById('currentUserDisplay');
-
-        // Tab navigation
+        // Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tabName = btn.dataset.tab;
                 if (tabName === 'mydata') {
-                    showReAuthModal();
+                    // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบแล้วหรือไม่
+                    if (currentUser && currentUser.userId) {
+                        switchTab(tabName);
+                        // โหลดข้อมูลตารางเวรของผู้ใช้ทันที
+                        loadUserSchedules();
+                    } else {
+                        showMessage(document.getElementById('myDataMessage'), 'กรุณาเข้าสู่ระบบก่อน', 'error');
+                    }
                 } else {
                     switchTab(tabName);
                 }
@@ -285,30 +386,52 @@
             document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
             document.getElementById(`${tabName}Tab`).classList.remove('hidden');
         }
-
-        // Login
+        // --------- Login (UserID + Password จากชีต) ----------
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const userId = document.getElementById('userId').value.trim();
             const password = document.getElementById('password').value.trim();
+            
+            if (!userId || !password) {
+                showMessage(loginMessage, 'กรุณากรอก User ID และ Password', 'error');
+                return;
+            }
+            
             loginText.textContent = 'กำลังตรวจสอบ...';
             loginLoading.classList.remove('hidden');
             loginBtn.disabled = true;
+            
             try {
+                console.log('Attempting login for:', userId);
                 const resp = await fetch(CONFIG.SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'login', userId, password })
                 });
+                
+                if (!resp.ok) {
+                    throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+                }
+                
                 const j = await resp.json();
-                if (!j.success) throw new Error(j.message || 'เข้าสู่ระบบไม่สำเร็จ');
+                console.log('Login response:', j);
+                
+                if (!j.success) {
+                    throw new Error(j.message || 'เข้าสู่ระบบไม่สำเร็จ');
+                }
+                
                 currentUser = { userId: j.userId, name: j.name };
                 currentUserDisplay.textContent = `${currentUser.name} (${currentUser.userId})`;
+                
+                // เข้าสู่ระบบสำเร็จ → เปิดแอป
                 loginPage.classList.add('hidden');
                 mainApp.classList.remove('hidden');
                 await loadInitialData();
+                
             } catch (err) {
+                console.error('Login error:', err);
                 showMessage(loginMessage, err.message || 'เข้าสู่ระบบไม่สำเร็จ', 'error');
+            } finally {
                 loginText.textContent = 'เข้าสู่ระบบ';
                 loginLoading.classList.add('hidden');
                 loginBtn.disabled = false;
@@ -322,8 +445,7 @@
             currentUser = null;
             currentUserDisplay.textContent = '';
         });
-
-        // Initial data load
+        // Initial load
         async function loadInitialData() {
             try {
                 await Promise.all([loadPharmacists(), loadShifts()]);
@@ -333,8 +455,7 @@
                 console.error(err);
             }
         }
-
-        // Dynamic schedule rows
+        // Dynamic rows
         document.getElementById('addScheduleRowBtn').addEventListener('click', addScheduleRow);
         function addScheduleRow() {
             scheduleRowCounter++;
@@ -347,7 +468,7 @@
                     <h4 class="text-lg font-semibold text-gray-800">ตารางเวรที่ ${scheduleRowCounter}</h4>
                     ${scheduleRowCounter > 1 ? `<button type="button" onclick="removeScheduleRow(${scheduleRowCounter})" class="text-red-500 hover:text-red-700 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a 1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
                     </button>` : ''}
                 </div>
@@ -371,52 +492,68 @@
             const row = document.getElementById(`scheduleRow_${rowId}`);
             if (row) row.remove();
         }
-
-        // Load initial lists
+        // --------- Load Data Functions ----------
         async function loadPharmacists() {
             try {
+                console.log('Loading pharmacists...');
                 let data;
                 try {
                     const r1 = await fetch(`${CONFIG.SCRIPT_URL}?action=getPharmacistsDetailed`);
+                    if (!r1.ok) throw new Error(`HTTP ${r1.status}`);
                     data = await r1.json();
-                } catch (_) {}
-                if (!data || !data.pharmacists) {
+                    console.log('Pharmacists detailed response:', data);
+                } catch (err) { 
+                    console.log('Detailed fetch failed, trying simple fetch:', err);
+                }
+                if (!data || !data.pharmacists || data.pharmacists.length === 0) {
                     const r2 = await fetch(`${CONFIG.SCRIPT_URL}?action=getPharmacists`);
+                    if (!r2.ok) throw new Error(`HTTP ${r2.status}`);
                     data = await r2.json();
+                    console.log('Pharmacists simple response:', data);
                 }
                 const list = data?.pharmacists || [];
                 pharmacists = list.map(p => {
                     if (typeof p === 'string') return { name: p, userId: '' };
                     return { name: p.name || '', userId: p.userId || '' };
                 });
+                console.log('Loaded pharmacists:', pharmacists);
             } catch (error) {
                 console.error('Error loading pharmacists:', error);
                 pharmacists = [];
+                showMessage(document.getElementById('pharmacistMessage'), 'ไม่สามารถโหลดข้อมูลเภสัชกรได้', 'error');
             }
         }
         async function loadShifts() {
             try {
+                console.log('Loading shifts...');
                 let data;
                 try {
                     const r1 = await fetch(`${CONFIG.SCRIPT_URL}?action=getShiftsDetailed`);
+                    if (!r1.ok) throw new Error(`HTTP ${r1.status}`);
                     data = await r1.json();
-                } catch (_) {}
-                if (!data || !data.shifts) {
-                    const r2 = await fetch(`${CONFIG.SCRIPT_URL}?action=getShifts`);
-                    data = await r2.json();
+                    console.log('Shifts detailed response:', data);
+                } catch (err) {
+                    console.log('Detailed fetch failed, trying simple fetch:', err);
                 }
-                const list = data.shifts || [];
+                if (!data || !data.shifts || data.shifts.length === 0) {
+                    const r2 = await fetch(`${CONFIG.SCRIPT_URL}?action=getShifts`);
+                    if (!r2.ok) throw new Error(`HTTP ${r2.status}`);
+                    data = await r2.json();
+                    console.log('Shifts simple response:', data);
+                }
+                const list = data?.shifts || [];
                 shifts = list.map(s => {
                     if (typeof s === 'string') return { name: s, abbrev: '' };
                     return { name: s.name || '', abbrev: s.abbrev || '' };
                 });
+                console.log('Loaded shifts:', shifts);
             } catch (error) {
                 console.error('Error loading shifts:', error);
                 shifts = [];
+                showMessage(document.getElementById('shiftMessage'), 'ไม่สามารถโหลดข้อมูลเวรได้', 'error');
             }
         }
-
-        // UI updates
+        // UI Binding
         function updateUI() {
             updatePharmacistSelect();
             updateShiftSelects();
@@ -433,26 +570,55 @@
                 select.appendChild(option);
             });
         }
+        function updatePharmacistsList() {
+            const container = document.getElementById('pharmacistsList');
+            container.innerHTML = '';
+            if (pharmacists.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลเภสัชกร</p>';
+                return;
+            }
+            pharmacists.forEach((p, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-white border-b border-gray-200';
+                div.innerHTML = `
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">${p.name}</p>
+                        <p class="text-sm text-gray-500">${p.userId}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function updateShiftsList() {
+            const container = document.getElementById('shiftsList');
+            container.innerHTML = '';
+            if (shifts.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">ยังไม่มีข้อมูลเวร</p>';
+                return;
+            }
+            shifts.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-white border-b border-gray-200';
+                div.innerHTML = `
+                    <p class="text-sm font-medium text-gray-800">${s.name}</p>
+                    <p class="text-sm text-gray-500">${s.abbrev}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
         function updateShiftSelects() {
             const selects = document.querySelectorAll('select[name="shift"]');
-            selects.forEach(sel => {
-                sel.innerHTML = '<option value="">-- เลือกเวร --</option>';
+            selects.forEach(select => {
+                select.innerHTML = '<option value="">-- เลือกเวร --</option>';
                 shifts.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s.name;
-                    opt.textContent = s.name;
-                    sel.appendChild(opt);
+                    const option = document.createElement('option');
+                    option.value = s.name;
+                    option.textContent = s.name;
+                    select.appendChild(option);
                 });
             });
         }
-        function updatePharmacistsList() {
-            // (Implement if necessary for manage data tab)
-        }
-        function updateShiftsList() {
-            // (Implement if necessary for manage data tab)
-        }
-
-        // Add Pharmacist
+        // --------- Add Data (Pharmacist, Shift, Schedule) ----------
         document.getElementById('pharmacistForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('pharmacistName').value.trim();
@@ -481,8 +647,6 @@
                 loading.classList.add('hidden');
             }
         });
-
-        // Add Shift
         document.getElementById('shiftForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('shiftName').value.trim();
@@ -511,8 +675,6 @@
                 loading.classList.add('hidden');
             }
         });
-
-        // Submit Schedule
         document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const pharmacistName = document.getElementById('pharmacistSelect').value;
@@ -533,6 +695,7 @@
                     const workDate = dateInput.value;
                     const shiftName = shiftSelect.value;
                     if (!workDate || !shiftName) continue;
+                    // Save each schedule entry via Apps Script
                     const resp = await fetch(CONFIG.SCRIPT_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -542,6 +705,7 @@
                     if (!j.success) throw new Error(j.message || 'บันทึกตารางเวรไม่สำเร็จ');
                 }
                 showMessage(document.getElementById('scheduleMessage'), 'บันทึกตารางเวรทั้งหมดสำเร็จ', 'success');
+                // Reset form
                 scheduleRowCounter = 0;
                 document.getElementById('scheduleRows').innerHTML = '';
                 addScheduleRow();
@@ -552,8 +716,7 @@
                 loading.classList.add('hidden');
             }
         });
-
-        // Report generation
+        // --------- Report Generation ----------
         document.getElementById('generateReportBtn').addEventListener('click', async () => {
             const startDate = document.getElementById('reportStartDate').value;
             const endDate = document.getElementById('reportEndDate').value;
@@ -588,7 +751,6 @@
                 showMessage(document.getElementById('reportMessage'), 'เกิดข้อผิดพลาดในการส่งออกไฟล์', 'error');
             }
         });
-
         function displayReportResults(list) {
             const tbody = document.getElementById('reportTableBody');
             tbody.innerHTML = '';
@@ -601,7 +763,7 @@
             list.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${index+1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${index + 1}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.pharmacist}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.shift}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateDMY(item.date)}</td>
@@ -616,6 +778,7 @@
             const shiftBody = document.getElementById('statsShiftBody');
             phBody.innerHTML = '';
             shiftBody.innerHTML = '';
+            // Pharmacist stats
             stats.pharmacists.forEach(item => {
                 const row = document.createElement('tr');
                 const shiftsDetail = Object.entries(item.shifts).map(([shift, count]) => `${shift} ${count} ครั้ง`).join(', ');
@@ -626,6 +789,7 @@
                 `;
                 phBody.appendChild(row);
             });
+            // Shift stats
             stats.shifts.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -667,17 +831,17 @@
             element.classList.remove('hidden');
             setTimeout(() => element.classList.add('hidden'), 5000);
         }
-        // Default report dates = today
+        // Default report date = today
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('reportStartDate').value = today;
         document.getElementById('reportEndDate').value = today;
-
-        // Function to load user schedules after re-auth
-        async function loadUserSchedules(userId) {
+        // ----- แก้ไขข้อมูลของฉัน -----
+        // ฟังก์ชันโหลดข้อมูลตารางเวรของผู้ใช้
+        async function loadUserSchedules() {
             try {
-                const resp = await fetch(`${CONFIG.SCRIPT_URL}?action=getSchedulesByUser&userId=${userId}`);
+                const resp = await fetch(`${CONFIG.SCRIPT_URL}?action=getSchedulesByUser&userId=${currentUser.userId}`);
                 const data = await resp.json();
-                if (!resp.ok || data.error) throw new Error(data.error || 'Error loading schedules');
+                if (!resp.ok || data.error) throw new Error(data.error || 'Error loading data');
                 displayUserSchedules(data.schedules || []);
             } catch (err) {
                 console.error('Error loading user schedules:', err);
@@ -685,57 +849,73 @@
             }
         }
 
-        // Show re-authentication modal
-        function showReAuthModal() {
-            document.getElementById('reAuthModal').classList.remove('hidden');
-            document.getElementById('reAuthForm').reset();
-            document.getElementById('reAuthMessage').classList.add('hidden');
-            document.getElementById('reAuthUserId').focus();
-        }
-        // Verification function
-        async function verifyUserForEdit(userId, password) {
-            const resp = await fetch(CONFIG.SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'login', userId, password })
-            });
-            const result = await resp.json();
-            if (!result.success) {
-                throw new Error(result.message || 'ยืนยันตัวตนไม่สำเร็จ');
+        document.getElementById('myDataFilterBtn').addEventListener('click', async () => {
+            const start = document.getElementById('myDataStartDate').value;
+            const end = document.getElementById('myDataEndDate').value;
+            if (!start && !end) {
+                showMessage(document.getElementById('myDataMessage'), 'กรุณาเลือกช่วงวันที่', 'error');
+                return;
             }
-            if (result.userId !== currentUser.userId) {
-                throw new Error('User ID หรือรหัสผ่านไม่ถูกต้อง');
-            }
-            // Load schedules after successful re-auth
-            await loadUserSchedules(userId);
-            return true;
-        }
-        document.getElementById('reAuthCancelBtn').addEventListener('click', () => {
-            document.getElementById('reAuthModal').classList.add('hidden');
-        });
-        document.getElementById('reAuthForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const userId = document.getElementById('reAuthUserId').value.trim();
-            const password = document.getElementById('reAuthPassword').value.trim();
-            const btnText = document.getElementById('reAuthBtnText');
-            const loading = document.getElementById('reAuthLoading');
-            btnText.textContent = 'กำลังตรวจสอบ...';
-            loading.classList.remove('hidden');
             try {
-                await verifyUserForEdit(userId, password);
-                document.getElementById('reAuthModal').classList.add('hidden');
-                switchTab('mydata');
-                // loadUserSchedules already called inside verifyUserForEdit
+                const resp = await fetch(`${CONFIG.SCRIPT_URL}?action=getUserSchedulesRange&userId=${currentUser.userId}&startDate=${start}&endDate=${end}`);
+                const data = await resp.json();
+                if (!resp.ok || data.error) throw new Error(data.error || 'Error fetching data');
+                displayUserSchedules(data.schedules || []);
             } catch (err) {
-                console.error('Re-authentication failed:', err);
-                showMessage(document.getElementById('reAuthMessage'), err.message || 'ยืนยันตัวตนไม่สำเร็จ', 'error');
-            } finally {
-                btnText.textContent = 'ยืนยัน';
-                loading.classList.add('hidden');
+                console.error('Error loading user schedules:', err);
+                showMessage(document.getElementById('myDataMessage'), 'เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
+            }
+        });
+        function displayUserSchedules(data) {
+            const tbody = document.getElementById('myDataTableBody');
+            const resultsDiv = document.getElementById('myScheduleTable');
+            tbody.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">ไม่พบข้อมูลเวรของคุณในช่วงวันที่นี้</td></tr>';
+            } else {
+                data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.pharmacist || 'ไม่ระบุ'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.shift || 'ไม่ระบุ'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateDMY(item.workDate)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateDMY(item.created)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><input type="checkbox" class="select-checkbox" data-id="${item.id || ''}"></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            resultsDiv.classList.remove('hidden');
+        }
+        // Setup initial users
+        document.getElementById('setupInitialUsersBtn').addEventListener('click', async () => {
+            if (!confirm('คุณต้องการสร้างข้อมูลผู้ใช้เริ่มต้นหรือไม่? (admin/1234 และ pharma1/1234)')) {
+                return;
+            }
+            
+            try {
+                const resp = await fetch(CONFIG.SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'setupInitialUsers' })
+                });
+                const result = await resp.json();
+                
+                if (result.success) {
+                    showMessage(document.getElementById('pharmacistMessage'), result.message || 'สร้างข้อมูลเริ่มต้นสำเร็จ', 'success');
+                    await loadPharmacists();
+                    updatePharmacistsList();
+                } else {
+                    showMessage(document.getElementById('pharmacistMessage'), result.message || 'เกิดข้อผิดพลาด', 'error');
+                }
+            } catch (error) {
+                console.error('Error setting up initial users:', error);
+                showMessage(document.getElementById('pharmacistMessage'), 'เกิดข้อผิดพลาดในการสร้างข้อมูลเริ่มต้น', 'error');
             }
         });
 
-        // Delete selected schedules
+        // Delete selected events
         document.getElementById('deleteSelectedBtn').addEventListener('click', async () => {
             const checkboxes = document.querySelectorAll('.select-checkbox:checked');
             if (checkboxes.length === 0) {
@@ -773,29 +953,5 @@
             }
         });
     </script>
-    <!-- Re-authentication Modal -->
-    <div id="reAuthModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
-            <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">ยืนยันตัวตนอีกครั้ง</h2>
-            <form id="reAuthForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">User ID</label>
-                    <input type="text" id="reAuthUserId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="เช่น p001" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input type="password" id="reAuthPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="เช่น 1234" required>
-                </div>
-                <div class="flex justify-end gap-4">
-                    <button type="button" id="reAuthCancelBtn" class="text-gray-600 hover:text-gray-800">ยกเลิก</button>
-                    <button type="submit" id="reAuthSubmitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center">
-                        <span id="reAuthBtnText">ยืนยัน</span>
-                        <div id="reAuthLoading" class="loading ml-2 hidden"></div>
-                    </button>
-                </div>
-            </form>
-            <div id="reAuthMessage" class="mt-4 text-center text-sm hidden"></div>
-        </div>
-    </div>
 </body>
 </html>
